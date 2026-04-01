@@ -40,7 +40,6 @@ import {
   RotateCcw,
   History,
   TrendingUp,
-  Calendar,
   Zap
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
@@ -80,7 +79,7 @@ const DEPARTMENTS = ['HR', 'Finance', 'Operations', 'IT', 'Quality', 'Compliance
 const SUB_DEPARTMENTS = ['Recruitment', 'Payroll', 'Audit', 'Security', 'QA', 'Legal'];
 const CATEGORIES = ['Internal', 'External', 'Confidential', 'Public'];
 const LANGUAGES = ['English', 'French', 'Spanish', 'Chinese', 'Arabic'];
-const STAKEHOLDERS = ['John Doe', 'Jane Smith', 'Marcus Thorne', 'Sarah Chen', 'Alex Rivera'];
+const STAKEHOLDERS = ['John Doe', 'Jane Smith', 'Marcus Thorne', 'Sarah Chen', 'John See'];
 
 const GlobalStyles = () => (
   <style>{`
@@ -252,7 +251,7 @@ interface Document {
 }
 
 const MOCK_USERS = [
-  { id: 'u1', name: 'Alex Rivera', role: 'Owner', avatar: 'https://i.pravatar.cc/150?u=u1' },
+  { id: 'u1', name: 'John See', role: 'Owner', avatar: 'https://i.pravatar.cc/150?u=u1' },
   { id: 'u2', name: 'Sarah Chen', role: 'Controller', avatar: 'https://i.pravatar.cc/150?u=u2' },
   { id: 'u3', name: 'Marcus Thorne', role: 'SME', avatar: 'https://i.pravatar.cc/150?u=u3' },
 ];
@@ -268,8 +267,8 @@ const INITIAL_DOCS: Document[] = [
     category: 'Recruitment',
     status: 'Published',
     priority: 'Medium',
-    owner: 'Alex Rivera',
-    submittedBy: 'Alex Rivera',
+    owner: 'John See',
+    submittedBy: 'John See',
     submittedDate: '2024-01-15',
     approvedBy: 'Sarah Chen',
     approvalDate: '2024-01-20',
@@ -297,8 +296,8 @@ const INITIAL_DOCS: Document[] = [
     category: 'Audit',
     status: 'Under Review',
     priority: 'High',
-    owner: 'Alex Rivera',
-    submittedBy: 'Alex Rivera',
+    owner: 'John See',
+    submittedBy: 'John See',
     submittedDate: '2024-03-10',
     modifiedDate: '2024-03-10',
     size: '4.5 MB',
@@ -353,8 +352,8 @@ const INITIAL_DOCS: Document[] = [
     category: 'Inspection',
     status: 'Draft',
     priority: 'Low',
-    owner: 'Alex Rivera',
-    submittedBy: 'Alex Rivera',
+    owner: 'John See',
+    submittedBy: 'John See',
     submittedDate: '2024-02-28',
     modifiedDate: '2024-02-28',
     size: '0.5 MB',
@@ -366,7 +365,7 @@ const INITIAL_DOCS: Document[] = [
     subDepartment: 'QA',
     departmentId: 'DEPT-QUA',
     documentCategory: 'Internal',
-    internalStakeholderSME: ['Alex Rivera'],
+    internalStakeholderSME: ['John See'],
     nextReviewBy: '2025-02-28',
     language: 'English'
   },
@@ -396,7 +395,7 @@ const INITIAL_DOCS: Document[] = [
     subDepartment: 'Safety',
     departmentId: 'DEPT-OPS',
     documentCategory: 'Public',
-    internalStakeholderSME: ['Alex Rivera', 'John Doe'],
+    internalStakeholderSME: ['John See', 'John Doe'],
     nextReviewBy: '2024-12-10',
     language: 'English'
   },
@@ -439,8 +438,8 @@ const INITIAL_DOCS: Document[] = [
     category: 'Infrastructure',
     status: 'Under Review',
     priority: 'High',
-    owner: 'Alex Rivera',
-    submittedBy: 'Alex Rivera',
+    owner: 'John See',
+    submittedBy: 'John See',
     submittedDate: '2024-03-20',
     modifiedDate: '2024-03-20',
     size: '5.2 MB',
@@ -452,7 +451,7 @@ const INITIAL_DOCS: Document[] = [
     subDepartment: 'Security',
     departmentId: 'DEPT-IT',
     documentCategory: 'Confidential',
-    internalStakeholderSME: ['Alex Rivera', 'Marcus Thorne'],
+    internalStakeholderSME: ['John See', 'Marcus Thorne'],
     nextReviewBy: '2024-09-20',
     language: 'English'
   },
@@ -488,6 +487,95 @@ const INITIAL_DOCS: Document[] = [
 ];
 
 // --- COMPONENTS ---
+
+const LoginPage = ({ onLogin }: { onLogin: () => void }) => {
+  return (
+    <div style={{ 
+      minHeight: '100vh', 
+      display: 'flex', 
+      alignItems: 'center', 
+      justifyContent: 'center', 
+      backgroundColor: '#f2f2f2', // Microsoft background color
+      fontFamily: '"Segoe UI", "Helvetica Neue", sans-serif'
+    }}>
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        style={{ 
+          width: '100%', 
+          maxWidth: '440px', 
+          padding: '44px', 
+          backgroundColor: '#ffffff',
+          boxShadow: '0 2px 6px rgba(0,0,0,0.2)',
+          borderRadius: '2px' // Microsoft uses very slight rounding or sharp corners
+        }}
+      >
+        <div style={{ textAlign: 'left', marginBottom: '20px' }}>
+          <svg width="108" height="24" viewBox="0 0 108 24" style={{ marginBottom: '24px' }}>
+            <rect width="10" height="10" fill="#f25022"/>
+            <rect x="11" width="10" height="10" fill="#7fbb00"/>
+            <rect y="11" width="10" height="10" fill="#00a4ef"/>
+            <rect x="11" y="11" width="10" height="10" fill="#ffb900"/>
+            <text x="25" y="18" style={{ fontSize: '18px', fontWeight: 600, fill: '#737373', fontFamily: 'Segoe UI' }}>Microsoft</text>
+          </svg>
+          
+          <h1 style={{ fontSize: '24px', fontWeight: 600, color: '#1b1b1b', marginBottom: '16px' }}>Sign in</h1>
+          
+          <div style={{ marginBottom: '24px' }}>
+            <div style={{ 
+              fontSize: '15px', 
+              color: '#1b1b1b', 
+              padding: '8px 0', 
+              borderBottom: '1px solid #0067b8',
+              marginBottom: '12px'
+            }}>
+              JohnSee@uictech.com.sg
+            </div>
+            <p style={{ fontSize: '13px', color: '#1b1b1b' }}>
+              No account? <span style={{ color: '#0067b8', cursor: 'pointer' }}>Create one!</span>
+            </p>
+            <p style={{ fontSize: '13px', color: '#0067b8', marginTop: '12px', cursor: 'pointer' }}>
+              Can't access your account?
+            </p>
+          </div>
+        </div>
+
+        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px', marginTop: '40px' }}>
+          <button 
+            onClick={onLogin}
+            style={{ 
+              padding: '6px 36px', 
+              backgroundColor: '#0067b8', 
+              color: 'white', 
+              border: 'none', 
+              fontSize: '15px',
+              fontWeight: 400,
+              cursor: 'pointer',
+              minWidth: '108px'
+            }}
+          >
+            Next
+          </button>
+        </div>
+      </motion.div>
+      
+      {/* Footer links similar to Microsoft */}
+      <div style={{ 
+        position: 'absolute', 
+        bottom: '20px', 
+        right: '20px', 
+        display: 'flex', 
+        gap: '24px', 
+        fontSize: '12px', 
+        color: '#737373' 
+      }}>
+        <span>Terms of use</span>
+        <span>Privacy & cookies</span>
+        <span>...</span>
+      </div>
+    </div>
+  );
+};
 
 const StatusBadge = ({ status }: { status: DocStatus }) => {
   const config = {
@@ -553,6 +641,7 @@ const IconButton = ({ icon: Icon, onClick, color = COLORS.textMuted, size = 18 }
 // --- MAIN APP ---
 
 export default function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [currentRole, setCurrentRole] = useState<Role>('Owner');
   const [activePage, setActivePage] = useState('Dashboard');
   const [documents, setDocuments] = useState<Document[]>(INITIAL_DOCS);
@@ -574,6 +663,15 @@ export default function App() {
 
   const currentUser = MOCK_USERS.find(u => u.role === currentRole) || MOCK_USERS[0];
 
+  if (!isLoggedIn) {
+    return (
+      <>
+        <GlobalStyles />
+        <LoginPage onLogin={() => setIsLoggedIn(true)} />
+      </>
+    );
+  }
+
   return (
     <div style={{ display: 'flex', minHeight: '100vh', backgroundColor: COLORS.bgBase }}>
       <GlobalStyles />
@@ -592,7 +690,7 @@ export default function App() {
       }}>
         <div style={{ padding: '48px 24px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           <div style={{ textAlign: 'center' }}>
-            <h1 style={{ fontSize: '20px', fontWeight: 900, letterSpacing: '1px', color: '#FFFFFF', textTransform: 'uppercase' }}>Kamoa Copper SA</h1>
+            <h1 style={{ fontSize: '20px', fontWeight: 900, letterSpacing: '1px', color: '#FFFFFF', textTransform: 'uppercase' }}>UIC</h1>
             <div style={{ width: '40px', height: '2px', background: COLORS.accentGradient, margin: '16px auto' }} />
             <p style={{ fontSize: '11px', color: 'rgba(255, 255, 255, 0.6)', letterSpacing: '2px', textTransform: 'uppercase', fontWeight: 700 }}>Document Control System</p>
           </div>
@@ -629,8 +727,30 @@ export default function App() {
           ))}
         </nav>
 
+        <div style={{ padding: '20px 12px', borderTop: '1px solid rgba(255, 255, 255, 0.1)' }}>
+          <button
+            onClick={() => setIsLoggedIn(false)}
+            style={{
+              width: '100%',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '12px',
+              padding: '12px 16px',
+              borderRadius: '12px',
+              border: 'none',
+              background: 'transparent',
+              color: 'rgba(255, 255, 255, 0.5)',
+              cursor: 'pointer',
+              transition: 'all 0.2s',
+            }}
+          >
+            <LogOut size={20} />
+            <span style={{ fontWeight: 500, fontSize: '14px' }}>Logout</span>
+          </button>
+        </div>
+
         <div style={{ padding: '24px', borderTop: '1px solid rgba(255, 255, 255, 0.1)', textAlign: 'center' }}>
-          <p style={{ fontSize: '10px', color: 'rgba(255, 255, 255, 0.3)', letterSpacing: '1px' }}>© 2026 Kamoa Copper SA</p>
+          <p style={{ fontSize: '10px', color: 'rgba(255, 255, 255, 0.3)', letterSpacing: '1px' }}>© 2026 UIC</p>
         </div>
       </aside>
 
@@ -842,22 +962,6 @@ function Dashboard({ stats, documents, user, onNewDocClick }: { stats: any, docu
           <p style={{ color: COLORS.textMuted, fontSize: '15px' }}>Here's what's happening with your documents today.</p>
         </div>
         <div style={{ display: 'flex', gap: '12px' }}>
-          <button style={{ 
-            display: 'flex', 
-            alignItems: 'center', 
-            gap: '8px', 
-            padding: '10px 20px', 
-            backgroundColor: '#FFFFFF', 
-            border: `1px solid ${COLORS.border}`, 
-            borderRadius: '12px', 
-            fontSize: '14px', 
-            fontWeight: 600, 
-            color: COLORS.textPrimary,
-            cursor: 'pointer'
-          }}>
-            <Calendar size={18} />
-            Mar 25, 2026
-          </button>
           <button 
             onClick={onNewDocClick}
             style={{ 
@@ -1519,8 +1623,8 @@ function UploadWizard({ onComplete }: { onComplete: (doc: Document) => void }) {
       category: formData.documentCategory || 'General',
       status: 'Under Review',
       priority: formData.priority as any,
-      owner: 'Alex Rivera',
-      submittedBy: 'Alex Rivera',
+      owner: 'John See',
+      submittedBy: 'John See',
       submittedDate: new Date().toISOString().split('T')[0],
       modifiedDate: new Date().toISOString().split('T')[0],
       size: '2.4 MB',
