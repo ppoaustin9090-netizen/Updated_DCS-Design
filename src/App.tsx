@@ -12,7 +12,6 @@ import {
   Archive, 
   Settings, 
   Bell, 
-  Search, 
   ChevronRight, 
   ChevronDown, 
   MoreVertical, 
@@ -79,7 +78,7 @@ const DEPARTMENTS = ['HR', 'Finance', 'Operations', 'IT', 'Quality', 'Compliance
 const SUB_DEPARTMENTS = ['Recruitment', 'Payroll', 'Audit', 'Security', 'QA', 'Legal'];
 const CATEGORIES = ['Internal', 'External', 'Confidential', 'Public'];
 const LANGUAGES = ['English', 'French', 'Spanish', 'Chinese', 'Arabic'];
-const STAKEHOLDERS = ['John Doe', 'Jane Smith', 'Marcus Thorne', 'Sarah Chen', 'John See'];
+const STAKEHOLDERS = ['John Doe', 'Jane Smith', 'Marcus Thorne', 'Sarah Chen', 'John See', 'Alain'];
 
 const GlobalStyles = () => (
   <style>{`
@@ -489,6 +488,16 @@ const INITIAL_DOCS: Document[] = [
 // --- COMPONENTS ---
 
 const LoginPage = ({ onLogin }: { onLogin: () => void }) => {
+  const [step, setStep] = useState<'login' | 'verify'>('login');
+  const [code, setCode] = useState('123456');
+
+  const handleNext = () => setStep('verify');
+  const handleVerify = () => {
+    if (code.length === 6) {
+      onLogin();
+    }
+  };
+
   return (
     <div style={{ 
       minHeight: '100vh', 
@@ -499,8 +508,10 @@ const LoginPage = ({ onLogin }: { onLogin: () => void }) => {
       fontFamily: '"Segoe UI", "Helvetica Neue", sans-serif'
     }}>
       <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
+        key={step}
+        initial={{ opacity: 0, x: step === 'verify' ? 20 : -20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.2 }}
         style={{ 
           width: '100%', 
           maxWidth: '440px', 
@@ -519,43 +530,142 @@ const LoginPage = ({ onLogin }: { onLogin: () => void }) => {
             <text x="25" y="18" style={{ fontSize: '18px', fontWeight: 600, fill: '#737373', fontFamily: 'Segoe UI' }}>Microsoft</text>
           </svg>
           
-          <h1 style={{ fontSize: '24px', fontWeight: 600, color: '#1b1b1b', marginBottom: '16px' }}>Sign in</h1>
-          
-          <div style={{ marginBottom: '24px' }}>
-            <div style={{ 
-              fontSize: '15px', 
-              color: '#1b1b1b', 
-              padding: '8px 0', 
-              borderBottom: '1px solid #0067b8',
-              marginBottom: '12px'
-            }}>
-              JohnSee@uictech.com.sg
-            </div>
-            <p style={{ fontSize: '13px', color: '#1b1b1b' }}>
-              No account? <span style={{ color: '#0067b8', cursor: 'pointer' }}>Create one!</span>
-            </p>
-            <p style={{ fontSize: '13px', color: '#0067b8', marginTop: '12px', cursor: 'pointer' }}>
-              Can't access your account?
-            </p>
-          </div>
-        </div>
+          {step === 'login' ? (
+            <>
+              <h1 style={{ fontSize: '24px', fontWeight: 600, color: '#1b1b1b', marginBottom: '16px' }}>Sign in</h1>
+              
+              <div style={{ marginBottom: '24px' }}>
+                <div style={{ 
+                  fontSize: '15px', 
+                  color: '#1b1b1b', 
+                  padding: '8px 0', 
+                  borderBottom: '1px solid #0067b8',
+                  marginBottom: '12px'
+                }}>
+                  JohnSee@uictech.com.sg
+                </div>
+                <p style={{ fontSize: '13px', color: '#1b1b1b' }}>
+                  No account? <span style={{ color: '#0067b8', cursor: 'pointer' }}>Create one!</span>
+                </p>
+                <p style={{ fontSize: '13px', color: '#0067b8', marginTop: '12px', cursor: 'pointer' }}>
+                  Can't access your account?
+                </p>
+              </div>
 
-        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px', marginTop: '40px' }}>
-          <button 
-            onClick={onLogin}
-            style={{ 
-              padding: '6px 36px', 
-              backgroundColor: '#0067b8', 
-              color: 'white', 
-              border: 'none', 
-              fontSize: '15px',
-              fontWeight: 400,
-              cursor: 'pointer',
-              minWidth: '108px'
-            }}
-          >
-            Next
-          </button>
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px', marginTop: '40px' }}>
+                <button 
+                  onClick={handleNext}
+                  style={{ 
+                    padding: '6px 36px', 
+                    backgroundColor: '#0067b8', 
+                    color: 'white', 
+                    border: 'none', 
+                    fontSize: '15px',
+                    fontWeight: 400,
+                    cursor: 'pointer',
+                    minWidth: '108px'
+                  }}
+                >
+                  Next
+                </button>
+              </div>
+            </>
+          ) : (
+            <>
+              <h1 style={{ fontSize: '24px', fontWeight: 600, color: '#1b1b1b', marginBottom: '8px' }}>Enter code</h1>
+              <p style={{ fontSize: '15px', color: '#1b1b1b', marginBottom: '24px' }}>
+                Enter the code sent to your email/phone
+              </p>
+              
+              <div style={{ position: 'relative', marginBottom: '24px' }}>
+                <input 
+                  type="text"
+                  maxLength={6}
+                  value={code}
+                  onChange={(e) => setCode(e.target.value.replace(/\D/g, ''))}
+                  style={{ 
+                    position: 'absolute',
+                    opacity: 0,
+                    width: '100%',
+                    height: '50px',
+                    cursor: 'text',
+                    zIndex: 2,
+                    border: 'none',
+                    outline: 'none'
+                  }}
+                  autoFocus
+                />
+                <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-start' }}>
+                  {[...Array(6)].map((_, i) => (
+                    <div 
+                      key={i}
+                      style={{ 
+                        width: '44px', 
+                        height: '54px', 
+                        border: `1px solid ${code.length === i ? '#0067b8' : '#666666'}`,
+                        backgroundColor: '#ffffff',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        borderRadius: '2px',
+                        boxShadow: code.length === i ? '0 0 0 1px #0067b8' : 'none',
+                      }}
+                    >
+                      {code[i] ? (
+                        <div style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: '#000000' }} />
+                      ) : (
+                        code.length === i && <div style={{ width: '1px', height: '20px', backgroundColor: '#000000', animation: 'blink 1s infinite' }} />
+                      )}
+                    </div>
+                  ))}
+                </div>
+                <style>{`
+                  @keyframes blink {
+                    0%, 100% { opacity: 1; }
+                    50% { opacity: 0; }
+                  }
+                `}</style>
+                <p style={{ fontSize: '13px', color: '#1b1b1b', marginTop: '24px' }}>
+                  Didn't receive the code? <span style={{ color: '#0067b8', cursor: 'pointer' }}>Resend code</span>
+                </p>
+              </div>
+
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px', marginTop: '40px' }}>
+                <button 
+                  onClick={() => setStep('login')}
+                  style={{ 
+                    padding: '8px 40px', 
+                    backgroundColor: '#cccccc', 
+                    color: '#000000', 
+                    border: 'none', 
+                    fontSize: '15px',
+                    fontWeight: 400,
+                    cursor: 'pointer',
+                    minWidth: '108px'
+                  }}
+                >
+                  Back
+                </button>
+                <button 
+                  onClick={handleVerify}
+                  disabled={code.length !== 6}
+                  style={{ 
+                    padding: '8px 40px', 
+                    backgroundColor: code.length === 6 ? '#0067b8' : '#0067b8', // Keep blue but maybe lower opacity if disabled? Image shows it blue.
+                    opacity: code.length === 6 ? 1 : 0.6,
+                    color: 'white', 
+                    border: 'none', 
+                    fontSize: '15px',
+                    fontWeight: 400,
+                    cursor: code.length === 6 ? 'pointer' : 'default',
+                    minWidth: '108px'
+                  }}
+                >
+                  Verify
+                </button>
+              </div>
+            </>
+          )}
         </div>
       </motion.div>
       
@@ -647,12 +757,11 @@ export default function App() {
   const [documents, setDocuments] = useState<Document[]>(INITIAL_DOCS);
   const [sortConfig, setSortConfig] = useState<{ key: keyof Document, direction: 'asc' | 'desc' } | null>(null);
   const [notifications, setNotifications] = useState([
-    { id: 1, type: 'review', message: 'New document submitted for your review: IT Security Protocol', time: '2 mins ago', read: false },
-    { id: 2, type: 'approval', message: 'Your document "Employee Onboarding" has been approved.', time: '1 hour ago', read: true },
+    { id: 1, type: 'review', message: 'New file submitted for your review: IT Security Protocol', time: '2 mins ago', read: false },
+    { id: 2, type: 'approval', message: 'Your file "Employee Onboarding" has been approved.', time: '1 hour ago', read: true },
     { id: 3, type: 'deadline', message: 'Reminder: Quality Control Form review deadline is tomorrow.', time: '5 hours ago', read: false },
   ]);
   const [isNotifOpen, setIsNotifOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
 
   // Dashboard Stats
   const stats = useMemo(() => ({
@@ -692,15 +801,15 @@ export default function App() {
           <div style={{ textAlign: 'center' }}>
             <h1 style={{ fontSize: '20px', fontWeight: 900, letterSpacing: '1px', color: '#FFFFFF', textTransform: 'uppercase' }}>UIC</h1>
             <div style={{ width: '40px', height: '2px', background: COLORS.accentGradient, margin: '16px auto' }} />
-            <p style={{ fontSize: '11px', color: 'rgba(255, 255, 255, 0.6)', letterSpacing: '2px', textTransform: 'uppercase', fontWeight: 700 }}>Document Control System</p>
+            <p style={{ fontSize: '11px', color: 'rgba(255, 255, 255, 0.6)', letterSpacing: '2px', textTransform: 'uppercase', fontWeight: 700 }}>File Control System</p>
           </div>
         </div>
 
         <nav style={{ flex: 1, padding: '20px 12px' }}>
           {[
             { name: 'Dashboard', icon: LayoutDashboard },
-            { name: 'My Documents', icon: Files },
-            { name: 'Upload', icon: UploadCloud },
+            { name: 'My Files', icon: Files },
+            { name: 'Upload Files', icon: UploadCloud },
           ].map((item) => (
             <button
               key={item.name}
@@ -774,17 +883,6 @@ export default function App() {
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
-            <div style={{ position: 'relative' }}>
-              <Search style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: COLORS.textMuted }} size={16} />
-              <input 
-                type="text" 
-                placeholder="Search documents..." 
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                style={{ paddingLeft: '36px', width: '300px', backgroundColor: '#FFFFFF', border: 'none', borderRadius: '20px', boxShadow: '0 2px 10px rgba(0,0,0,0.02)' }}
-              />
-            </div>
-            
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '6px 16px', backgroundColor: '#FFFFFF', borderRadius: '100px', boxShadow: '0 2px 10px rgba(0,0,0,0.02)', border: `1px solid ${COLORS.border}` }}>
               <div style={{ textAlign: 'right' }}>
                 <p style={{ fontSize: '13px', fontWeight: 700, color: COLORS.textPrimary, lineHeight: 1 }}>{currentUser.name}</p>
@@ -807,21 +905,21 @@ export default function App() {
                 stats={stats} 
                 documents={documents} 
                 user={currentUser} 
-                onNewDocClick={() => setActivePage('Upload')} 
+                onNewFilesClick={() => setActivePage('Upload Files')} 
               />
             </motion.div>
           )}
-          {activePage === 'My Documents' && (
+          {activePage === 'My Files' && (
             <motion.div 
               key="my-docs"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
             >
-              <MyDocuments documents={documents} onNewDocClick={() => setActivePage('Upload')} />
+              <MyDocuments documents={documents} onNewFilesClick={() => setActivePage('Upload Files')} />
             </motion.div>
           )}
-          {activePage === 'Upload' && (
+          {activePage === 'Upload Files' && (
             <motion.div 
               key="upload"
               initial={{ opacity: 0, y: 20 }}
@@ -855,7 +953,7 @@ export default function App() {
               exit={{ opacity: 0, y: -20 }}
             >
               <div className="glass" style={{ borderRadius: '16px', padding: '32px' }}>
-                <h2 style={{ fontSize: '24px', marginBottom: '24px' }}>Document Archive</h2>
+                <h2 style={{ fontSize: '24px', marginBottom: '24px' }}>File Archive</h2>
                 <DataTable data={documents.filter(d => d.status === 'Archived')} type="Approved" />
               </div>
             </motion.div>
@@ -880,7 +978,7 @@ export default function App() {
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <div>
                       <p style={{ fontWeight: 600 }}>Auto-Archive</p>
-                      <p style={{ fontSize: '13px', color: COLORS.textMuted }}>Archive documents after 1 year</p>
+                      <p style={{ fontSize: '13px', color: COLORS.textMuted }}>Archive files after 1 year</p>
                     </div>
                     <input type="checkbox" style={{ width: '40px', height: '20px' }} />
                   </div>
@@ -908,7 +1006,7 @@ export default function App() {
 
 // --- SUB-PAGES ---
 
-function Dashboard({ stats, documents, user, onNewDocClick }: { stats: any, documents: Document[], user: any, onNewDocClick: () => void }) {
+function Dashboard({ stats, documents, user, onNewFilesClick }: { stats: any, documents: Document[], user: any, onNewFilesClick: () => void }) {
   const [activeTab, setActiveTab] = useState('Pending');
 
   const filteredDocs = useMemo(() => {
@@ -959,11 +1057,11 @@ function Dashboard({ stats, documents, user, onNewDocClick }: { stats: any, docu
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
         <div>
           <h2 style={{ fontSize: '28px', fontWeight: 800, color: COLORS.textPrimary, marginBottom: '4px' }}>Welcome back, {user.name}</h2>
-          <p style={{ color: COLORS.textMuted, fontSize: '15px' }}>Here's what's happening with your documents today.</p>
+          <p style={{ color: COLORS.textMuted, fontSize: '15px' }}>Here's what's happening with your files today.</p>
         </div>
         <div style={{ display: 'flex', gap: '12px' }}>
           <button 
-            onClick={onNewDocClick}
+            onClick={onNewFilesClick}
             style={{ 
               display: 'flex', 
               alignItems: 'center', 
@@ -980,7 +1078,7 @@ function Dashboard({ stats, documents, user, onNewDocClick }: { stats: any, docu
             }}
           >
             <Plus size={18} />
-            New Document
+            New Files
           </button>
         </div>
       </div>
@@ -991,7 +1089,7 @@ function Dashboard({ stats, documents, user, onNewDocClick }: { stats: any, docu
         <div className="glass" style={{ gridColumn: 'span 12', padding: '24px', borderRadius: '24px', backgroundColor: '#FFFFFF', border: `1px solid ${COLORS.border}`, display: 'flex', flexDirection: 'column' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
             <div>
-              <h3 style={{ fontSize: '20px', fontWeight: 700, color: COLORS.textPrimary }}>Document Status Overview</h3>
+              <h3 style={{ fontSize: '20px', fontWeight: 700, color: COLORS.textPrimary }}>File Status Overview</h3>
               <p style={{ fontSize: '13px', color: COLORS.textMuted }}>Real-time distribution of processing states</p>
             </div>
           </div>
@@ -1049,7 +1147,7 @@ function Dashboard({ stats, documents, user, onNewDocClick }: { stats: any, docu
               {/* Summary Cards */}
               <div style={{ gridColumn: 'span 2', display: 'flex', gap: '16px', marginBottom: '8px' }}>
                 <div style={{ flex: 1, padding: '16px', backgroundColor: `${COLORS.accentSecondary}08`, borderRadius: '16px', border: `1px solid ${COLORS.accentSecondary}20` }}>
-                  <p style={{ fontSize: '11px', color: COLORS.accentSecondary, fontWeight: 700, textTransform: 'uppercase', marginBottom: '4px' }}>Total Documents</p>
+                  <p style={{ fontSize: '11px', color: COLORS.accentSecondary, fontWeight: 700, textTransform: 'uppercase', marginBottom: '4px' }}>Total Files</p>
                   <p style={{ fontSize: '24px', fontWeight: 800, color: COLORS.textPrimary }}>{totalDocs}</p>
                 </div>
               </div>
@@ -1114,7 +1212,7 @@ function Dashboard({ stats, documents, user, onNewDocClick }: { stats: any, docu
   );
 }
 
-function MyDocuments({ documents, onNewDocClick }: { documents: Document[], onNewDocClick: () => void }) {
+function MyDocuments({ documents, onNewFilesClick }: { documents: Document[], onNewFilesClick: () => void }) {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [activeFilter, setActiveFilter] = useState('Published');
   const [selectedFolder, setSelectedFolder] = useState<string | null>(null);
@@ -1170,7 +1268,7 @@ function MyDocuments({ documents, onNewDocClick }: { documents: Document[], onNe
               </button>
             </div>
             <button 
-              onClick={onNewDocClick}
+              onClick={onNewFilesClick}
               style={{ 
                 backgroundColor: COLORS.accentSecondary, 
                 color: COLORS.bgBase, 
@@ -1184,7 +1282,7 @@ function MyDocuments({ documents, onNewDocClick }: { documents: Document[], onNe
                 cursor: 'pointer'
               }}
             >
-              <Plus size={18} /> New Doc
+              <Plus size={18} /> New Files
             </button>
           </div>
         </div>
@@ -1549,6 +1647,7 @@ function FolderTree({ onSelect }: { onSelect: (id: string) => void }) {
 function UploadWizard({ onComplete }: { onComplete: (doc: Document) => void }) {
   const [step, setStep] = useState(1);
   const [dragActive, setDragActive] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [formData, setFormData] = useState<Partial<Document>>({
     title: '',
@@ -1564,12 +1663,30 @@ function UploadWizard({ onComplete }: { onComplete: (doc: Document) => void }) {
     documentCategory: CATEGORIES[0],
     internalStakeholderSME: [],
     language: LANGUAGES[0],
+    size: '0 KB',
   });
+
+  const formatFileSize = (bytes: number) => {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      setFormData(prev => ({ ...prev, title: file.name.split('.')[0] }));
+      if (file.size > 10 * 1024 * 1024) {
+        setError("File size exceeds 10MB limit.");
+        return;
+      }
+      setError(null);
+      setFormData(prev => ({ 
+        ...prev, 
+        title: file.name.split('.')[0],
+        size: formatFileSize(file.size)
+      }));
       setStep(2);
     }
   };
@@ -1584,7 +1701,16 @@ function UploadWizard({ onComplete }: { onComplete: (doc: Document) => void }) {
     setDragActive(false);
     const file = e.dataTransfer.files?.[0];
     if (file) {
-      setFormData(prev => ({ ...prev, title: file.name.split('.')[0] }));
+      if (file.size > 10 * 1024 * 1024) {
+        setError("File size exceeds 10MB limit.");
+        return;
+      }
+      setError(null);
+      setFormData(prev => ({ 
+        ...prev, 
+        title: file.name.split('.')[0],
+        size: formatFileSize(file.size)
+      }));
       setStep(2);
     }
   };
@@ -1615,7 +1741,7 @@ function UploadWizard({ onComplete }: { onComplete: (doc: Document) => void }) {
   const handleSubmit = () => {
     const newDoc: Document = {
       id: Math.random().toString(36).substr(2, 9),
-      title: formData.title || 'Untitled Document',
+      title: formData.title || 'Untitled File',
       docNumber: `DOC-2024-${Math.floor(Math.random() * 1000).toString().padStart(3, '0')}`,
       version: formData.version || '1.0',
       type: formData.typeOfDocument as any,
@@ -1627,7 +1753,7 @@ function UploadWizard({ onComplete }: { onComplete: (doc: Document) => void }) {
       submittedBy: 'John See',
       submittedDate: new Date().toISOString().split('T')[0],
       modifiedDate: new Date().toISOString().split('T')[0],
-      size: '2.4 MB',
+      size: formData.size || '0 KB',
       description: formData.description || '',
       typeOfDocument: formData.typeOfDocument || DOC_TYPES[0],
       typeOfSubDocument: formData.typeOfSubDocument || SUB_DOC_TYPES[0],
@@ -1719,7 +1845,7 @@ function UploadWizard({ onComplete }: { onComplete: (doc: Document) => void }) {
                 ref={fileInputRef} 
                 style={{ display: 'none' }} 
                 onChange={handleFileChange}
-                accept=".pdf,.docx,.xlsx,image/*"
+                accept=".pdf,.docx,.xlsx,image/*,.mp4"
               />
               <div style={{ 
                 width: '80px', 
@@ -1733,10 +1859,19 @@ function UploadWizard({ onComplete }: { onComplete: (doc: Document) => void }) {
               }}>
                 <UploadCloud size={40} />
               </div>
-              <h2 style={{ fontSize: '28px', marginBottom: '12px', fontWeight: 800 }}>Drop your documents here</h2>
+              <h2 style={{ fontSize: '28px', marginBottom: '12px', fontWeight: 800 }}>Drop your files here</h2>
               <p style={{ color: 'var(--text-muted)', marginBottom: '40px', maxWidth: '400px', margin: '0 auto 40px', fontSize: '16px' }}>
-                Support for PDF, DOCX, XLSX and high-resolution images. Max file size 50MB.
+                Support for PDF, DOCX, XLSX, MP4 and high-resolution images. Max file size 10MB.
               </p>
+              {error && (
+                <motion.div 
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  style={{ color: 'var(--accent-danger)', fontSize: '14px', fontWeight: 600, marginBottom: '20px' }}
+                >
+                  {error}
+                </motion.div>
+              )}
               <button 
                 onClick={handleBrowseClick}
                 className="btn-ripple glow-primary" 
@@ -1765,17 +1900,17 @@ function UploadWizard({ onComplete }: { onComplete: (doc: Document) => void }) {
             className="glass"
             style={{ padding: '48px', borderRadius: '32px' }}
           >
-            <h2 style={{ fontSize: '28px', marginBottom: '40px', fontWeight: 800, textAlign: 'center' }}>Document Metadata</h2>
+            <h2 style={{ fontSize: '28px', marginBottom: '40px', fontWeight: 800, textAlign: 'center' }}>File Meta Data</h2>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '32px' }}>
               {/* Row 2 */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                <label style={{ fontSize: '14px', fontWeight: '700', color: 'var(--text-muted)' }}>Type of Document*</label>
+                <label style={{ fontSize: '14px', fontWeight: '700', color: 'var(--text-muted)' }}>Type of File*</label>
                 <select value={formData.typeOfDocument} onChange={e => setFormData({...formData, typeOfDocument: e.target.value})}>
                   {DOC_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
                 </select>
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                <label style={{ fontSize: '14px', fontWeight: '700', color: 'var(--text-muted)' }}>Type of Sub Document*</label>
+                <label style={{ fontSize: '14px', fontWeight: '700', color: 'var(--text-muted)' }}>Type of Sub File*</label>
                 <select value={formData.typeOfSubDocument} onChange={e => setFormData({...formData, typeOfSubDocument: e.target.value})}>
                   {SUB_DOC_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
                 </select>
@@ -1783,7 +1918,7 @@ function UploadWizard({ onComplete }: { onComplete: (doc: Document) => void }) {
 
               {/* Row 3 - Pre-populated */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                <label style={{ fontSize: '14px', fontWeight: '700', color: 'var(--text-muted)' }}>Document Type Code (Auto)</label>
+                <label style={{ fontSize: '14px', fontWeight: '700', color: 'var(--text-muted)' }}>File Type Code (Auto)</label>
                 <input type="text" readOnly value={documentTypeCode} style={{ backgroundColor: 'rgba(255,255,255,0.05)', color: 'var(--text-muted)' }} />
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
@@ -1807,7 +1942,7 @@ function UploadWizard({ onComplete }: { onComplete: (doc: Document) => void }) {
 
               {/* Row 5 */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                <label style={{ fontSize: '14px', fontWeight: '700', color: 'var(--text-muted)' }}>Document Category*</label>
+                <label style={{ fontSize: '14px', fontWeight: '700', color: 'var(--text-muted)' }}>File Category*</label>
                 <select value={formData.documentCategory} onChange={e => setFormData({...formData, documentCategory: e.target.value})}>
                   {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
                 </select>
@@ -1865,7 +2000,7 @@ function UploadWizard({ onComplete }: { onComplete: (doc: Document) => void }) {
               {/* Row 8 - Description */}
               <div style={{ gridColumn: 'span 2', display: 'flex', flexDirection: 'column', gap: '10px' }}>
                 <label style={{ fontSize: '14px', fontWeight: '700', color: 'var(--text-muted)' }}>Description (Single line of text)</label>
-                <input type="text" placeholder="Briefly describe the document's purpose..." value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} />
+                <input type="text" placeholder="Briefly describe the file's purpose..." value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} />
               </div>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '48px' }}>
@@ -1898,14 +2033,14 @@ function UploadWizard({ onComplete }: { onComplete: (doc: Document) => void }) {
             </div>
             <h2 style={{ fontSize: '32px', marginBottom: '16px', fontWeight: 800 }}>Ready to Submit?</h2>
             <p style={{ color: 'var(--text-muted)', marginBottom: '48px', maxWidth: '500px', margin: '0 auto 48px', fontSize: '18px' }}>
-              Your document "{formData.title || 'Untitled'}" has been processed. Submitting will initiate the approval workflow.
+              Your file "{formData.title || 'Untitled'}" has been processed. Submitting will initiate the approval workflow.
             </p>
             
             <div style={{ background: 'rgba(255,255,255,0.02)', padding: '32px', borderRadius: '24px', border: '1px solid var(--border)', marginBottom: '48px', textAlign: 'left' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
                 <input type="checkbox" id="confirm" checked={isConfirmed} onChange={e => setIsConfirmed(e.target.checked)} style={{ width: '24px', height: '24px', cursor: 'pointer' }} />
                 <label htmlFor="confirm" style={{ fontSize: '15px', color: 'var(--text-muted)', cursor: 'pointer', lineHeight: 1.5 }}>
-                  I confirm that this document complies with all enterprise security policies and is ready for official review.
+                  I confirm that this file complies with all enterprise security policies and is ready for official review.
                 </label>
               </div>
             </div>
@@ -2085,9 +2220,9 @@ function HelpButton({ role }: { role: Role }) {
   const [showTooltip, setShowTooltip] = useState(false);
   
   const tooltips = {
-    Owner: "As an Owner, you can upload new documents and track their approval progress.",
-    Controller: "As a Controller, you review submitted documents and can Approve or Retract them.",
-    SME: "As an SME, you provide expert feedback and comments on documents in review."
+    Owner: "As an Owner, you can upload new files and track their approval progress.",
+    Controller: "As a Controller, you review submitted files and can Approve or Retract them.",
+    SME: "As an SME, you provide expert feedback and comments on files in review."
   };
 
   return (
